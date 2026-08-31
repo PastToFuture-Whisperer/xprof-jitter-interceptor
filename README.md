@@ -53,7 +53,7 @@ python3 minimal_interceptor_example.py --mode strict --iterations 200
 
 The architecture decouples jitter control into two independent parameters: **Compiler Knob (Program Level)** and **Infrastructure Knob (System Level)**.
 
-![Dual-Knob Interceptor Architecture](docs/assets/architecture_diagram.png)  
+![Dual-Knob Interceptor Architecture](assets/architecture_diagram.png)  
 *(Figure 1: Conceptual diagram of Dual-Knob Separation showing Compiler Padding and Infra Host Sink Energy Release)*
 
 #### **Pipeline Integration Abstraction**
