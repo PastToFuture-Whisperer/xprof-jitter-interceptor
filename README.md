@@ -81,6 +81,8 @@ Unavoidable hardware physical jitter is monitored against an exponentially weigh
 > **Intellectual Property & Sandbox Policy:**  
 > The standalone verification sandbox (`minimal_interceptor_example.py`) is structured with bounded input parameters to allow 100% local validation of transient response control. For commercial production integration, custom kernel tuning, or academic endorsements, please reach out via the contact channels listed below.
 
+> **Pure Original Architecture & Zero-Dependency Design:**  
+> This implementation is built entirely as an original architecture, relying strictly on standard execution primitives (JAX/NumPy and standard Python runtime) without third-party proprietary dependencies.
 ---
 
 ### **6. Prerequisites & Environment**
@@ -172,6 +174,8 @@ For private technical discussions, research collaboration, or commercial integra
 
 ---
 
-### **13. License**
+### **13. License & Intellectual Property Scope**
 
-This project and all associated benchmark logs are released under the [**MIT License**](https://opensource.org/licenses/MIT).
+This repository and its **publicly disclosed artifacts** (including documentation, empirical trace logs, and public sandbox samples) are released under the [**MIT License**](https://opensource.org/licenses/MIT).
+
+* **Scope Restriction:** The MIT License applies exclusively to the materials publicly published within this repository. Internal core benchmark engines, non-disclosed proprietary algorithms, and underlying intellectual property concepts remain the exclusive property of the author and are **not** covered by this open-source license.
