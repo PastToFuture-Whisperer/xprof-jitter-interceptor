@@ -123,7 +123,7 @@ Below are raw execution captures and trace profile artifacts obtained directly f
 
 | Control OFF (RAW Unmanaged Jitter) | Control ON (Tier-2.5 Interceptor Active) |
 | :---: | :---: |
-| ![Control OFF XProf Trace](assets/xprof_trace_control_off.jpg) | ![Control ON XProf Trace](assets/xprof_trace_control_on.jpg) |
+| ![Control OFF XProf Trace](assets/xprof_trace_control_off.jpeg) | ![Control ON XProf Trace](assets/xprof_trace_control_on.jpeg) |
 | *Figure 2: Re-compilation spikes & unmanaged execution jitter* | *Figure 3: Deterministic flow smoothing via Host Sink absorption* |
 
 #### **2. Terminal Execution Evidence**
