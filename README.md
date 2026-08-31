@@ -56,6 +56,28 @@ The architecture decouples jitter control into two independent parameters: **Com
 ![Dual-Knob Interceptor Architecture](docs/assets/architecture_diagram.png)  
 *(Figure 1: Conceptual diagram of Dual-Knob Separation showing Compiler Padding and Infra Host Sink Energy Release)*
 
+#### **Pipeline Integration Abstraction**
+The interceptor operates as a non-invasive wrapper around standard JAX execution loops, isolating compile-time dynamic triggers and absorbing post-barrier physical latency spikes:
+
+```python
+# [Compiler Knob] Binding static upper bound shape prior to execution loop
+static_x = jnp.ones((shape_size, shape_size))
+static_y = jnp.zeros((shape_size, shape_size))
+
+# Standard JAX Execution Pipeline
+for step in range(iterations):
+    with jax.profiler.StepTraceAnnotation("Step", step_num=step):
+        # 1. Device Execution (Fixed shape bindings eliminate JIT re-compilation)
+        result = jnp.dot(static_x, static_y)
+        
+        # 2. Non-blocking Device Synchronization Barrier
+        result.block_until_ready()
+        
+        # 3. [Infra Knob] Host Sink Pacing (Dissipates excess energy if spike detected)
+        if enable_jitter_control and host_sink_ms > 0.0:
+            time.sleep(host_sink_ms / 1000.0)
+```
+
 **1. [Compiler Knob] Static Upper Bound Tensor Shape:**  
 Dynamic input shape fluctuations are bound to a pre-defined maximum static upper bound. This completely suppresses dynamic shape triggers, reducing JAX/XLA JIT re-compilation events to exactly zero.
 
