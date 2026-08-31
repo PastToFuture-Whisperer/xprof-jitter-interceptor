@@ -97,43 +97,49 @@ Unavoidable hardware physical jitter is monitored against an exponentially weigh
 ### **7. Repository Toolkit & Verification Commands**
 
 #### **Repository Structure**
-* `jitter_control_benchmark.py`: Benchmark data collection engine (v1.1.0).
-* `minimal_interceptor_example.py`: Sandbox execution script *(Scheduled: Sept 4, 2026)*.
+* `jitter_control_benchmark.py`: Benchmark data collection engine (v1.1.0) [Internal / Non-public].
+* `minimal_interceptor_example.py`: Sandbox execution script *(Scheduled: Early September 2026)*.
 * `xprof_traces/`: Raw Google Cloud benchmark trace logs (`control_off` vs `control_on`).
-* `docs/assets/`: Terminal evidence logs and architectural schematics.
+* `assets/`: Terminal evidence logs and architectural schematics.
 
-#### **GCP Execution Commands**
+#### **Trace Verification Commands**
 ```bash
-# [1] Control OFF (RAW Unmanaged Benchmark)
-python3 jitter_control_benchmark.py 200 \
-  --logdir ./xprof_traces/control_off \
-  --no-jitter-control
+# [1] Inspect raw benchmark profile traces locally via TensorBoard
+tensorboard --logdir=./xprof_traces
 
-# [2] Control ON (Tier-2.5 Interceptor Active)
-python3 jitter_control_benchmark.py 200 \
-  --logdir ./xprof_traces/control_on \
-  --control-mode adaptive \
-  --shape-size 512
+# [2] Run local minimal verification sandbox (Available in Early September 2026)
+# python3 minimal_interceptor_example.py --mode strict --iterations 200
+
 ```
 
 ---
-
 ### **8. Performance Evidence & GCP Execution Logs**
 
-Below are raw execution captures obtained directly from the Google Cloud Shell environment (Compute Engine / TPU execution runtime).
+Below are raw execution captures and trace profile artifacts obtained directly from the Google Cloud Shell environment (Compute Engine / TPU execution runtime).
 
-#### **Terminal Benchmark Evidence**
+#### **1. XProf Profile Timeline Traces (TensorBoard Screenshots)**
 
 | Control OFF (RAW Unmanaged Jitter) | Control ON (Tier-2.5 Interceptor Active) |
 | :---: | :---: |
-| ![Control OFF Terminal Output](assets/control_off_terminal.jpeg) | ![Control ON Terminal Output](assets/control_on_terminal.jpeg) |
-| *Figure 2: Dynamic shape spikes & unmanaged jitter* | *Figure 3: Active Host Sink absorption & bounded execution* |
+| ![Control OFF XProf Trace](assets/xprof_trace_control_off.jpg) | ![Control ON XProf Trace](assets/xprof_trace_control_on.jpg) |
+| *Figure 2: Re-compilation spikes & unmanaged execution jitter* | *Figure 3: Deterministic flow smoothing via Host Sink absorption* |
 
-#### **Execution Performance Summary**
+#### **2. Terminal Execution Evidence**
+
+| Control OFF Terminal Output | Control ON Terminal Output |
+| :---: | :---: |
+| ![Control OFF Terminal Output](assets/control_off_terminal.jpeg) | ![Control ON Terminal Output](assets/control_on_terminal.jpeg) |
+| *Figure 4: Raw terminal output for unmanaged run* | *Figure 5: Active Host Sink dissipation logs* |
+
+#### **3. Downloadable Trace Artifacts (Raw Data)**
+Inspect the exact profile traces locally using TensorBoard by downloading the raw archived traces from the `examples/` directory:
+*  **[Download Control OFF Trace Archive (ZIP)](examples/control_off_trace.zip)**
+*  **[Download Control ON Trace Archive (ZIP)](examples/control_on_trace.zip)**
+
+#### **4. Execution Performance Summary**
 
 * **Control OFF (RAW):** Latency fluctuates violently between **7.06 ms** and **24.14 ms** due to unmanaged transient spikes. Host Sink remains **0.00 ms** (unprotected).
 * **Control ON (Active):** Peak energy spikes are captured and bounded. Excess latency energy is safely dissipated into CPU Host Sink time delays (**5.19 ms** at Step 40, **18.14 ms** at Step 120), maintaining a smooth and deterministic execution profile.
-
 
 ---
 
