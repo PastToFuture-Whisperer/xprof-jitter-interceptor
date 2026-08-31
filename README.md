@@ -10,7 +10,7 @@
 > **Eliminating Re-compilation & Physical Jitter in JAX/XLA via Dual-Knob Interception Architecture**  
 > 
 > :book: **PoC Playground Release Status:**  
-> Detailed theoretical architecture, mathematical formulations, and empirical benchmark logs (v1.1.0) are fully disclosed below. The minimal, non-reversible executable PoC (`minimal_interceptor_example.py`) for local verification is scheduled for release on **September 4, 2026**. Hit :star: **Star** to stay tuned for the PoC launch.
+> Detailed theoretical architecture, mathematical formulations, and empirical benchmark logs (v1.1.0) are fully disclosed below. The minimal, non-reversible executable PoC (`minimal_interceptor_example.py`) for local verification is scheduled for release on **early September 2026**. Hit :star: **Star** to stay tuned for the PoC launch.
 
 ---
 
@@ -41,7 +41,7 @@ tensorboard --logdir=./xprof_traces
 ```
 
 #### **Option B: Local Sandbox Execution (Scheduled for Sept 4, 2026)**
-The standalone execution wrapper (`minimal_interceptor_example.py`) backed by binary core interface will be released on September 4, 2026, allowing direct local verification of transient response control.
+The standalone execution wrapper (`minimal_interceptor_example.py`) backed by binary core interface will be released on early September 2026, allowing direct local verification of transient response control.
 ```bash
 # [Available Sept 4, 2026] Run local minimal verification sandbox
 python3 minimal_interceptor_example.py --mode strict --iterations 200
@@ -154,7 +154,7 @@ If you have technical inquiries regarding theoretical formulations, mathematical
 
 ### **11. Sharing & Support**
 
-If this work contributes to your research or infrastructure optimizations, please share it within your team and technology network. Be sure to hit **:star: Star** to receive notifications for the September 4 PoC sandbox release.
+If this work contributes to your research or infrastructure optimizations, please share it within your team and technology network. Be sure to hit **:star: Star** to receive notifications for the early September 2026 PoC sandbox release.
 
 ---
 
