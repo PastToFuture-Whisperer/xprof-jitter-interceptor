@@ -12,6 +12,9 @@
 > :book: **PoC Playground Release Status:**  
 > Detailed theoretical architecture, mathematical formulations, and empirical benchmark logs (v1.1.0) are fully disclosed below. The minimal, non-reversible executable PoC (`minimal_interceptor_example.py`) for local verification is scheduled for release on **early September 2026**. Hit :star: **Star** to stay tuned for the PoC launch.
 
+> :bulb: **Looking for Immediate TensorBoard Log Footprint Reduction?**  
+> If you are experiencing browser crashes or WebGL OOM failures due to oversized XProf trace logs, check out our complementary lightweight utility:  
+> :point_right: **[xprof-cubism-reducer: Zero-Dependency Trace Log Reducer](https://github.com/pasttofuture-whisperer/xprof-cubism-reducer)** (Reduces log size by 80%–95% via spatial downsampling and rectangular merging).
 ---
 
 ### **1. Key Performance & Benchmark Indicators**
