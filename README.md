@@ -9,12 +9,13 @@
 
 > **Eliminating Re-compilation & Physical Jitter in JAX/XLA via Dual-Knob Interception Architecture**  
 > 
-> :book: **PoC Playground Release Status:**  
-> Detailed theoretical architecture, mathematical formulations, and empirical benchmark logs (v1.1.0) are fully disclosed below. The minimal, non-reversible executable PoC (`minimal_interceptor_example.py`) for local verification is scheduled for release on **early September 2026**. Hit :star: **Star** to stay tuned for the PoC launch.
+> :rocket: **PoC Playground Released:**  
+> Detailed theoretical architecture, mathematical formulations, empirical benchmark logs, and the minimal executable sandbox (`minimal_interceptor_example.py`) for local verification are now fully available below.
 
 > :bulb: **Looking for Immediate TensorBoard Log Footprint Reduction?**  
 > If you are experiencing browser crashes or WebGL OOM failures due to oversized XProf trace logs, check out our complementary lightweight utility:  
 > :point_right: **[xprof-cubism-reducer: Zero-Dependency Trace Log Reducer](https://github.com/pasttofuture-whisperer/xprof-cubism-reducer)** (Reduces log size by 80%–95% via spatial downsampling and rectangular merging).
+
 ---
 
 ### **1. Key Performance & Benchmark Indicators**
@@ -30,24 +31,27 @@ This architecture introduces a low-layer deterministic flow control model design
 
 ### **2. Quick Start Guide**
 
-This repository currently provides public verification artifacts (v1.1.0) alongside a scheduled release path for local sandbox testing.
+This repository provides public verification artifacts alongside a minimal local execution sandbox for instant verification.
 
-#### **Option A: Empirical Trace Verification (Public Artifacts)**
-Visualize and verify the bundled TensorBoard XProf profile traces locally:
+#### **Option A: Local Sandbox Execution (PoC Playground)**
+Run the minimal interceptor example directly to verify transient response control and dynamic shape absorption locally:
 ```bash
 # Clone the repository and navigate to the directory
-git clone [https://github.com/PastToFuture-Whisperer/xprof-jitter-interceptor.git](https://github.com/PastToFuture-Whisperer/xprof-jitter-interceptor.git)
+git clone https://github.com/PastToFuture-Whisperer/xprof-jitter-interceptor.git
 cd xprof-jitter-interceptor
 
-# Launch TensorBoard to inspect XProf timeline traces
-tensorboard --logdir=./xprof_traces
+# Execute minimal interceptor sandbox (Strict Mode)
+python3 minimal_interceptor_example.py --mode strict --steps 200
+
+# Execute unmanaged baseline run for comparison
+python3 minimal_interceptor_example.py --mode off --steps 200
 ```
 
-#### **Option B: Local Sandbox Execution (Scheduled for Sept 4, 2026)**
-The standalone execution wrapper (`minimal_interceptor_example.py`) backed by binary core interface will be released on early September 2026, allowing direct local verification of transient response control.
+#### **Option B: Empirical Trace Verification (Public Artifacts)**
+Visualize and verify the bundled TensorBoard XProf profile traces locally:
 ```bash
-# [Available Sept 4, 2026] Run local minimal verification sandbox
-python3 minimal_interceptor_example.py --mode strict --iterations 200
+# Launch TensorBoard to inspect XProf timeline traces
+tensorboard --logdir=./xprof_traces
 ```
 
 ---
@@ -92,7 +96,7 @@ Unavoidable hardware physical jitter is monitored against an exponentially weigh
 ### **4. Operational Boundaries & Safety Guards**
 
 * **Static Shape Boundary Limits:**  
-  If incoming tensor shapes exceed the configured `--shape-size`, the interceptor bypasses dynamic dynamic resizing to prevent memory fragmentation and emits a boundary exception, falling back safely to standard unmanaged execution.
+  If incoming tensor shapes exceed the configured `--target-shape`, the interceptor bypasses dynamic resizing to prevent memory fragmentation and emits a boundary exception, falling back safely to standard unmanaged execution.
 * **Latency Trade-off Model:**  
   Elimination of variance (stddev) and peak spikes involves a controlled trade-off, introducing minimal, deterministic millisecond-level Host Sink delays to ensure absolute pipeline predictability.
 
@@ -108,12 +112,13 @@ Unavoidable hardware physical jitter is monitored against an exponentially weigh
 
 > **Pure Original Architecture & Zero-Dependency Design:**  
 > This implementation is built entirely as an original architecture, relying strictly on standard execution primitives (JAX/NumPy and standard Python runtime) without third-party proprietary dependencies.
+
 ---
 
 ### **6. Prerequisites & Environment**
 
 1. **Hardware / Cloud Environment:**  
-   Google Cloud Vertex AI / Compute Engine (TPU v4 / v5e, or NVIDIA A100 / H100 Tensor Core GPUs).
+   Google Cloud Vertex AI / Compute Engine (TPU v4 / v5e, or NVIDIA A100 / H100 Tensor Core GPUs), or local CPU/GPU verification environment.
 2. **Software Stack:**  
    Python 3.8+ / JAX >= 0.4.20 / jaxlib >= 0.4.20
 3. **Profiling Dependencies:**  
@@ -124,22 +129,22 @@ Unavoidable hardware physical jitter is monitored against an exponentially weigh
 ### **7. Repository Toolkit & Verification Commands**
 
 #### **Repository Structure**
+* `minimal_interceptor_example.py`: Local sandbox execution script for PoC validation.
 * `jitter_control_benchmark.py`: Benchmark data collection engine (v1.1.0) [Internal / Non-public].
-* `minimal_interceptor_example.py`: Sandbox execution script *(Scheduled: Early September 2026)*.
 * `xprof_traces/`: Raw Google Cloud benchmark trace logs (`control_off` vs `control_on`).
 * `assets/`: Terminal evidence logs and architectural schematics.
 
-#### **Trace Verification Commands**
+#### **Trace & Execution Commands**
 ```bash
-# [1] Inspect raw benchmark profile traces locally via TensorBoard
+# [1] Run local minimal verification sandbox
+python3 minimal_interceptor_example.py --mode strict --steps 200
+
+# [2] Inspect raw benchmark profile traces locally via TensorBoard
 tensorboard --logdir=./xprof_traces
-
-# [2] Run local minimal verification sandbox (Available in Early September 2026)
-# python3 minimal_interceptor_example.py --mode strict --iterations 200
-
 ```
 
 ---
+
 ### **8. Performance Evidence & GCP Execution Logs**
 
 Below are raw execution captures and trace profile artifacts obtained directly from the Google Cloud Shell environment (Compute Engine / TPU execution runtime).
@@ -160,8 +165,8 @@ Below are raw execution captures and trace profile artifacts obtained directly f
 
 #### **3. Downloadable Trace Artifacts (Raw Data)**
 Inspect the exact profile traces locally using TensorBoard by downloading the raw archived traces from the `examples/` directory:
-*  **[Download Control OFF Trace Archive (ZIP)](examples/control_off_trace.zip)**
-*  **[Download Control ON Trace Archive (ZIP)](examples/control_on_trace.zip)**
+* **[Download Control OFF Trace Archive (ZIP)](examples/control_off_trace.zip)**
+* **[Download Control ON Trace Archive (ZIP)](examples/control_on_trace.zip)**
 
 #### **4. Execution Performance Summary**
 
@@ -187,7 +192,7 @@ If you have technical inquiries regarding theoretical formulations, mathematical
 
 ### **11. Sharing & Support**
 
-If this work contributes to your research or infrastructure optimizations, please share it within your team and technology network. Be sure to hit **:star: Star** to receive notifications for the early September 2026 PoC sandbox release.
+If this work contributes to your research or infrastructure optimizations, please share it within your team and technology network.
 
 ---
 
