@@ -4,16 +4,16 @@ import numpy as np
 import jax
 import jax.numpy as jnp
 
-# --- コア処理：静的シェイプによるXLA再コンパイルの遮断 (Compiler Knob) ---
-#サンドボックス検証用スクリプトv1.0.0
+# --- Core Logic: Eliminating XLA Re-compilation via Static Upper Bound Shape (Compiler Knob) ---
+# Sandbox Verification Script v1.0.0
 
 @jax.jit
 def static_kernel(x, weight):
     return jnp.dot(x, weight)
 
-# --- 外乱・ハイドロプレーニングシミュレータ ---
+# --- Environmental Disturbance & Hydroplaning Simulator ---
 def simulate_workload_and_jitter(step, base_shape, hydro_spike=False):
-    # 外乱発生時は動的なテンソルサイズ変動を模擬（Control OFF時のRe-compilation誘発）
+    # Simulate dynamic tensor shape fluctuations during spikes (Triggers Re-compilation when Control is OFF)
     if hydro_spike and (step % 20 == 0):
         dynamic_size = base_shape[0] + (step % 5 + 1) * 64
     else:
@@ -32,7 +32,7 @@ class JitterInterceptor:
         self.ema_latency = 0.0
 
     def process_and_execute(self, x_data, weight_jax):
-        # 1. Compiler Knob: パディングによるShape固定 (Static Upper Bound Shape)
+        # 1. Compiler Knob: Static Upper Bound Shape binding via constant padding
         curr_h, curr_w = x_data.shape
         pad_h = max(0, self.target_shape[0] - curr_h)
         pad_w = max(0, self.target_shape[1] - curr_w)
@@ -44,22 +44,22 @@ class JitterInterceptor:
             
         x_jax = jnp.array(x_padded)
 
-        # 2. 実行 & デバイス同期
+        # 2. Execution & Non-blocking Device Synchronization Barrier
         t_start = time.perf_counter()
         res = static_kernel(x_jax, weight_jax)
-        res.block_until_ready() # 同期バリア
+        res.block_until_ready() # Sync barrier
         t_end = time.perf_counter()
         
         raw_latency = (t_end - t_start) * 1000.0 # ms
 
-        # 3. Infra Knob: Aiki-Damping & Host Sink による余剰エネルギー廃棄
+        # 3. Infra Knob: Excess latency energy dissipation via Aiki-Damping & Host Sink
         if self.mode != "off":
             if self.ema_latency == 0.0:
                 self.ema_latency = raw_latency
             else:
                 self.ema_latency = self.gamma * self.ema_latency + (1.0 - self.gamma) * raw_latency
             
-            # スパイク検知時のHost Sink処理
+            # Host Sink delay injection upon transient spike detection
             if raw_latency > self.ema_latency * self.boundary_ratio:
                 suppression_delay = (raw_latency - self.ema_latency) * 0.1
                 time.sleep(suppression_delay / 1000.0) # CPU Host Sink
@@ -69,7 +69,7 @@ class JitterInterceptor:
 def run_benchmark(mode, steps=100, profile_dir=None):
     print(f"\n--- Running Benchmark Mode: [{mode.upper()}] ---")
     
-    # 重み初期化
+    # Initialize weights
     shape = (1024, 1024)
     key = jax.random.PRNGKey(42)
     w_jax = jax.random.normal(key, shape)
@@ -78,20 +78,20 @@ def run_benchmark(mode, steps=100, profile_dir=None):
     interceptor = JitterInterceptor(mode=mode, target_shape=shape)
     latencies = []
 
-    # XProf プロファイル開始（指定時）
+    # Start XProf trace profiling (if profile_dir is specified)
     if profile_dir:
         jax.profiler.start_trace(profile_dir)
 
-    # ウォームアップ (JIT初回コンパイル)
+    # Warmup step (Initial JIT compilation)
     dummy_x = np.random.randn(*shape).astype(np.float32)
     _ = interceptor.process_and_execute(dummy_x, w_jax)
 
     for step in range(steps):
-        # Control OFF時はハイドロプレーニング外乱（動的Shape）をそのまま適用
+        # Apply hydroplaning spikes (dynamic shape variance) directly when Control is OFF
         x_raw = simulate_workload_and_jitter(step, shape, hydro_spike=(mode == "off"))
         
         if mode == "off":
-            # 制御なし：動的ShapeによりRe-compilationが発生
+            # Control OFF: Dynamic shapes trigger JIT Re-compilation overhead
             x_jax = jnp.array(x_raw)
             t0 = time.perf_counter()
             res = jnp.dot(x_jax, w_jax)
@@ -99,7 +99,7 @@ def run_benchmark(mode, steps=100, profile_dir=None):
             t1 = time.perf_counter()
             lat = (t1 - t0) * 1000.0
         else:
-            # Tier-2.5 制御有効
+            # Tier-2.5 Interceptor Active
             lat = interceptor.process_and_execute(x_raw, w_jax)
             
         latencies.append(lat)
